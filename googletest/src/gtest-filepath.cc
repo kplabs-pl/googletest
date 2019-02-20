@@ -93,14 +93,13 @@ static bool IsPathSeparator(char c) {
 // Returns the current working directory, or "" if unsuccessful.
 FilePath FilePath::GetCurrentDir() {
 #if GTEST_OS_WINDOWS_MOBILE || GTEST_OS_WINDOWS_PHONE || \
-    GTEST_OS_WINDOWS_RT || ARDUINO
+    GTEST_OS_WINDOWS_RT || ARDUINO || GTEST_MOCK_FS
   // Windows CE and Arduino don't have a current directory, so we just return
   // something reasonable.
   return FilePath(kCurrentDirectoryString);
 #elif GTEST_OS_WINDOWS
   char cwd[GTEST_PATH_MAX_ + 1] = { '\0' };
   return FilePath(_getcwd(cwd, sizeof(cwd)) == nullptr ? "" : cwd);
-#else
   char cwd[GTEST_PATH_MAX_ + 1] = { '\0' };
   char* result = getcwd(cwd, sizeof(cwd));
 # if GTEST_OS_NACL
@@ -223,6 +222,7 @@ bool FilePath::DirectoryExists() const {
   // Windows (like "C:\\").
   const FilePath& path(IsRootDirectory() ? *this :
                                            RemoveTrailingPathSeparator());
+#elif GTEST_MOCK_FS
 #else
   const FilePath& path(*this);
 #endif
@@ -235,6 +235,8 @@ bool FilePath::DirectoryExists() const {
       (attributes & FILE_ATTRIBUTE_DIRECTORY)) {
     result = true;
   }
+#elif GTEST_MOCK_FS
+  result = true;
 #else
   posix::StatStruct file_stat;
   result = posix::Stat(path.c_str(), &file_stat) == 0 &&
@@ -323,6 +325,8 @@ bool FilePath::CreateFolder() const {
   delete [] unicode;
 #elif GTEST_OS_WINDOWS
   int result = _mkdir(pathname_.c_str());
+#elif GTEST_MOCK_FS
+  const int result = 1;
 #else
   int result = mkdir(pathname_.c_str(), 0777);
 #endif  // GTEST_OS_WINDOWS_MOBILE
