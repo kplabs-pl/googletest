@@ -78,7 +78,7 @@ const char kCurrentDirectoryString[] = ".\\";
 # endif  // GTEST_OS_WINDOWS_MOBILE
 #else
 const char kPathSeparator = '/';
-const char kCurrentDirectoryString[] = "/";
+const char kCurrentDirectoryString[] = "./";
 #endif  // GTEST_OS_WINDOWS
 
 // Returns whether the given character is a valid path separator.
@@ -258,6 +258,9 @@ bool FilePath::IsRootDirectory() const {
 
 // Returns true if pathname describes an absolute path.
 bool FilePath::IsAbsolutePath() const {
+#if GTEST_MOCK_FS
+  return true;
+#endif
   const char* const name = pathname_.c_str();
 #if GTEST_OS_WINDOWS
   return pathname_.length() >= 3 &&
