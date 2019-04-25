@@ -78,7 +78,7 @@ const char kCurrentDirectoryString[] = ".\\";
 # endif  // GTEST_OS_WINDOWS_MOBILE
 #else
 const char kPathSeparator = '/';
-const char kCurrentDirectoryString[] = "./";
+const char kCurrentDirectoryString[] = "/";
 #endif  // GTEST_OS_WINDOWS
 
 // Returns whether the given character is a valid path separator.
