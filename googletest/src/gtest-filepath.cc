@@ -100,6 +100,7 @@ FilePath FilePath::GetCurrentDir() {
 #elif GTEST_OS_WINDOWS
   char cwd[GTEST_PATH_MAX_ + 1] = { '\0' };
   return FilePath(_getcwd(cwd, sizeof(cwd)) == nullptr ? "" : cwd);
+#else
   char cwd[GTEST_PATH_MAX_ + 1] = { '\0' };
   char* result = getcwd(cwd, sizeof(cwd));
 # if GTEST_OS_NACL
